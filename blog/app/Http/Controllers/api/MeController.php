@@ -13,11 +13,11 @@ class MeController extends Controller
     public function __construct(JWTAuth $auth){
         $this->auth = $auth;
     }
-    
+
     public function index(Request $request){
         return response()->json([
             'success' => true,
-            'data' => $request->user()
+            'user' => $request->user()
         ]);
     }
 

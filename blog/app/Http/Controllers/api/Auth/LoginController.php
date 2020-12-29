@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
@@ -44,6 +45,16 @@ class LoginController extends Controller
 
 
     public function login(Request $request){
+
+        // $validator =  $this->validator($request->all());
+
+        // if($validator->fails()){
+        //     return response()->json([
+        //         'success' => false,
+        //         'errors' => $validator->errors(),
+        //     ],422);
+        // }
+
         if($this->hasTooManyLoginAttempts($request)){
             $this->firstLockoutEvent($request);
 
@@ -81,8 +92,23 @@ class LoginController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $request->user(),
+            'user' => $request->user(),
             'token' => $token
         ],200);
     }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+    }
+
 }
